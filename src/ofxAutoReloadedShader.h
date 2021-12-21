@@ -10,8 +10,8 @@ class ofxAutoReloadedShader : public ofShader
 	~ofxAutoReloadedShader();
 	
 	// override the initialisation functions
-	bool load(string shaderName );
-	bool load(string vertName, string fragName, string geomName);
+	bool load(const std::filesystem::path& shaderName);
+	bool load(const std::filesystem::path& vertName, const std::filesystem::path& fragName, const std::filesystem::path& geomName);
 	
 	bool reloadShaders();
 	
