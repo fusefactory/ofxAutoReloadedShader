@@ -47,6 +47,7 @@ bool ofxAutoReloadedShader::load(const std::filesystem::path& vertName, const st
 	
 	vertexShaderFile   = ofFile(vertName);
 	fragmentShaderFile = ofFile(fragName);
+    geometryShaderFile = ofFile(geomName);
 	
 	ofBuffer vertexShaderBuffer = ofBufferFromFile(vertName);
 	ofBuffer fragmentShaderBuffer = ofBufferFromFile(fragName);
