@@ -1,6 +1,6 @@
 
 #include "ofxAutoReloadedShader.h"
-
+using namespace std::chrono;
 
 
 ofxAutoReloadedShader::ofxAutoReloadedShader(){
@@ -182,13 +182,25 @@ std::time_t ofxAutoReloadedShader::getLastModified( ofFile& _file )
 {
 	if( _file.exists() )
 	{
-        return std::filesystem::last_write_time(_file.path());
+		std:filesystem::file_time_type ftt = std::filesystem::last_write_time(_file.path());
+
+        return to_time_t(ftt);
 	}
 	else
 	{
 		return 0;
 	}
 }
+
+template <typename TP>
+std::time_t ofxAutoReloadedShader::to_time_t(TP tp)
+{
+	using namespace std::chrono;
+	auto sctp = time_point_cast<system_clock::duration>(tp - TP::clock::now()
+		+ system_clock::now());
+	return system_clock::to_time_t(sctp);
+}
+
 
 // ---------------------------------------------------------------------------------------------------------------------------------------------------
 //

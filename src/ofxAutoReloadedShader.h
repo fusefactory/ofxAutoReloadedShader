@@ -34,7 +34,6 @@ private:
 	bool loadShaderNextFrame;
 	
 	std::time_t getLastModified( ofFile& _file );
-	
 	int lastTimeCheckMillis;
 	int millisBetweenFileCheck;
 	
@@ -50,6 +49,8 @@ private:
     
     GLenum geometryInputType, geometryOutputType;
     int geometryOutputCount;
+	template<typename TP>
+	std::time_t to_time_t(TP tp);
 };
 
 
