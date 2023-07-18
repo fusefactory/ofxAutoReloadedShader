@@ -49,8 +49,12 @@ private:
     
     GLenum geometryInputType, geometryOutputType;
     int geometryOutputCount;
-	template<typename TP>
+    
+#ifdef __APPLE__
+#else
+    template<typename TP>
 	std::time_t to_time_t(TP tp);
+#endif    
 };
 
 
