@@ -12,9 +12,12 @@ class ofxAutoReloadedShader : public ofShader
 	// override the initialisation functions
 	bool load(const std::filesystem::path& shaderName);
 	bool load(const std::filesystem::path& vertName, const std::filesystem::path& fragName, const std::filesystem::path& geomName);
-	
+	#if !defined(TARGET_OPENGLES) && defined(glDispatchCompute)
+		bool loadCompute(const of::filesystem::path& shaderName);
+	#endif
+
 	bool reloadShaders();
-	
+
 	void enableWatchFiles();
 	void disableWatchFiles();
 		
@@ -40,10 +43,12 @@ private:
 	string vertexShaderFilename;
 	string fragmentShaderFilename;
 	string geometryShaderFilename;
+	string computeShaderFilename;
 	
 	ofFile vertexShaderFile;
 	ofFile fragmentShaderFile;
 	ofFile geometryShaderFile;
+	ofFile computeShaderFile;
 	
 	vector< std::time_t > fileChangedTimes;
     

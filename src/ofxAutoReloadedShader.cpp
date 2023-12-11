@@ -88,6 +88,36 @@ bool ofxAutoReloadedShader::load(const std::filesystem::path& vertName, const st
 	return linkProgram();
 }
 
+bool ofxAutoReloadedShader::loadCompute(const of::filesystem::path& shaderName)
+{
+	unload();
+
+	// hackety hack, clear errors or shader will fail to compile
+	GLuint err = glGetError();
+
+	lastTimeCheckMillis = ofGetElapsedTimeMillis();
+	setMillisBetweenFileCheck(2 * 1000);
+	enableWatchFiles();
+
+	loadShaderNextFrame = false;
+
+	computeShaderFilename = ofFilePath::getAbsolutePath(shaderName, true);
+	computeShaderFile.clear();
+	computeShaderFile = ofFile(shaderName);
+
+	ofBuffer computeShaderBuffer = ofBufferFromFile(shaderName);
+
+	fileChangedTimes.clear();
+	fileChangedTimes.push_back(getLastModified(computeShaderFile));
+
+	bindDefaults();
+
+	return setupShaderFromFile(GL_COMPUTE_SHADER, shaderName) && linkProgram();
+
+}
+
+
+
 // ---------------------------------------------------------------------------------------------------------------------------------------------------
 //
 void ofxAutoReloadedShader::_update(ofEventArgs &e)
