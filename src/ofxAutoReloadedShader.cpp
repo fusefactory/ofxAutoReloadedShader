@@ -109,10 +109,16 @@ bool ofxAutoReloadedShader::loadCompute(const of::filesystem::path& shaderName)
 
 	fileChangedTimes.clear();
 	fileChangedTimes.push_back(getLastModified(computeShaderFile));
+	if (computeShaderBuffer.size() > 0)
+	{
+		string sourceDirectoryPath = ofFilePath::getEnclosingDirectory(computeShaderFilename, false);
+		setupShaderFromSource(GL_COMPUTE_SHADER, computeShaderBuffer.getText(), sourceDirectoryPath);
+	}
 
 	bindDefaults();
+	this->isCompute = true;
 
-	return setupShaderFromFile(GL_COMPUTE_SHADER, shaderName) && linkProgram();
+	return linkProgram();
 
 }
 
@@ -122,6 +128,7 @@ bool ofxAutoReloadedShader::loadCompute(const of::filesystem::path& shaderName)
 //
 void ofxAutoReloadedShader::_update(ofEventArgs &e)
 {
+	cout << computeShaderFilename << endl;
 	if( loadShaderNextFrame )
 	{
 		reloadShaders();
@@ -147,7 +154,12 @@ void ofxAutoReloadedShader::_update(ofEventArgs &e)
 //
 bool ofxAutoReloadedShader::reloadShaders()
 {
-	return load( vertexShaderFilename,  fragmentShaderFilename, geometryShaderFilename );
+	if (isCompute) {
+		return loadCompute(computeShaderFilename);
+	}
+	else {
+		return load(vertexShaderFilename, fragmentShaderFilename, geometryShaderFilename);
+	}
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------------------------------
@@ -195,8 +207,7 @@ bool ofxAutoReloadedShader::filesChanged()
 			fileChanged = true;
 		}
 	}
-	
-	
+		
 	if( geometryShaderFile.exists() )
 	{
 		std::time_t geometryShaderFileLastChangeTime = getLastModified( geometryShaderFile );
@@ -206,7 +217,18 @@ bool ofxAutoReloadedShader::filesChanged()
 			fileChanged = true;
 		}
 	}
-	
+
+	if (computeShaderFile.exists())
+	{
+		std::time_t computeShaderFileLastChangeTime = getLastModified(computeShaderFile);
+		if (computeShaderFileLastChangeTime != fileChangedTimes.at(0))
+		{
+			fileChangedTimes.at(0) = computeShaderFileLastChangeTime;
+			fileChanged = true;
+		}
+
+	}
+
 	return fileChanged;
 }
 
@@ -219,7 +241,7 @@ std::time_t ofxAutoReloadedShader::getLastModified( ofFile& _file )
 #ifdef __APPLE__
     return std::filesystem::last_write_time(_file.path());
 #else
-    std:filesystem::file_time_type ftt = std::filesystem::last_write_time(_file.path());
+	std:filesystem::file_time_type ftt = std::filesystem::last_write_time(_file.path());
     return to_time_t(ftt);
 #endif
         
