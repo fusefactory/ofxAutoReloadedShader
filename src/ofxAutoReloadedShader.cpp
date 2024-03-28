@@ -88,7 +88,7 @@ bool ofxAutoReloadedShader::load(const std::filesystem::path& vertName, const st
 	return linkProgram();
 }
 
-bool ofxAutoReloadedShader::loadCompute(const of::filesystem::path& shaderName)
+bool ofxAutoReloadedShader::loadCompute(const std::filesystem::path& shaderName)
 {
 	unload();
 
@@ -128,7 +128,6 @@ bool ofxAutoReloadedShader::loadCompute(const of::filesystem::path& shaderName)
 //
 void ofxAutoReloadedShader::_update(ofEventArgs &e)
 {
-	cout << computeShaderFilename << endl;
 	if( loadShaderNextFrame )
 	{
 		reloadShaders();
@@ -238,12 +237,7 @@ std::time_t ofxAutoReloadedShader::getLastModified( ofFile& _file )
 {
 	if( _file.exists() )
 	{
-#ifdef __APPLE__
     return std::filesystem::last_write_time(_file.path());
-#else
-	std:filesystem::file_time_type ftt = std::filesystem::last_write_time(_file.path());
-    return to_time_t(ftt);
-#endif
         
 	}
 	else

@@ -13,7 +13,7 @@ class ofxAutoReloadedShader : public ofShader
 	bool load(const std::filesystem::path& shaderName);
 	bool load(const std::filesystem::path& vertName, const std::filesystem::path& fragName, const std::filesystem::path& geomName);
 	#if !defined(TARGET_OPENGLES) && defined(glDispatchCompute)
-		bool loadCompute(const of::filesystem::path& shaderName);
+		bool loadCompute(const std::filesystem::path& shaderName);
 	#endif
 
 	bool reloadShaders();
@@ -32,6 +32,7 @@ class ofxAutoReloadedShader : public ofShader
 private:
 	
 	bool bWatchingFiles;
+	bool isCompute;
 	bool filesChanged();
 	
 	bool loadShaderNextFrame;
